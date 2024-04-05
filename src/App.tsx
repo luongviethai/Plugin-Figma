@@ -18,7 +18,7 @@ function App() {
 			if (msg.type === "loaded") {
 				const { selectionLength, preview } = msg.data;
 				setSectionLength(selectionLength);
-				setUrl(convertToUrl(preview));
+				preview && setUrl(convertToUrl(preview));
 			}
 		};
 

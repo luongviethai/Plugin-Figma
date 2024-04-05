@@ -8,7 +8,7 @@ async function getSection()  {
     type: "loaded",
     data: {
       selectionLength: selection.length,
-      preview: await selection[0].exportAsync({ format: "JPG" })
+      preview: selection[0] ? await selection[0].exportAsync({ format: "JPG" }) : undefined
     },
   };
   figma.ui.postMessage(messageToUI);
