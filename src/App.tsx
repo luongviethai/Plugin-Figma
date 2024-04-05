@@ -1,36 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 
 function App() {
-	const [count, setCount] = useState(5);
+	const [selectedSelection, setSelectedSection] = useState(false);
 
-	const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setCount(parseInt(e.target.value));
-	};
+	useEffect(() => {
+		const onWindowMessage = (e: MessageEvent) => {
+			const msg = e.data.pluginMessage;
+			if (msg.type === "loaded") {
+				const { isHasSelectionSelected } = msg.data;
+				setSelectedSection(isHasSelectionSelected);
+			}
+		};
 
-	const handleCreate = () => {
-		parent.postMessage(
-			{ pluginMessage: { type: "create-rectangles", count } },
-			"*"
-		);
-	};
+		window.addEventListener("message", onWindowMessage);
+		parent.postMessage({ pluginMessage: { type: "ready" } }, "*");
 
-	const handleCancel = () => {
-		parent.postMessage({ pluginMessage: { type: "cancel" } }, "*");
-	};
+		return () => {
+			window.removeEventListener("message", onWindowMessage);
+		};
+	}, []);
 
 	return (
 		<>
-			<h2>Rectangle Creator</h2>
-			<p>
-				Count: <input id="count" value={count} onChange={handleOnChange} />
-			</p>
-			<button id="create" onClick={handleCreate}>
-				Create
-			</button>
-			<button id="cancel" onClick={handleCancel}>
-				Cancel
-			</button>
+			{selectedSelection ? (
+				<div>Tim thay Selected Section</div>
+			) : (
+				<div>Khong tim thay Selected Section</div>
+			)}
 		</>
 	);
 }
