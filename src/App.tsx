@@ -5,14 +5,6 @@ function App() {
 	const [sectionLength, setSectionLength] = useState(0);
 	const [url, setUrl] = useState("");
 
-	// const byteSectionPreview = selection.map((node) => {
-	// 	const imageBytes = node.exportAsync({ format: "JPG" });
-	// 	const imageURL = URL.createObjectURL(
-	// 		new Blob([imageBytes], { type: "image/jpg" })
-	// 	);
-	// 	return imageURL;
-	// });
-
 	const convertToUrl = (node: any) => {
 		const imageURL = URL.createObjectURL(
 			new Blob([node], { type: "image/jpg" })
