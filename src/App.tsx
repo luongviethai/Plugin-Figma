@@ -30,17 +30,26 @@ function App() {
 		};
 	}, []);
 
+	const handleGenerateCode = () => {
+		console.log("generate code");
+	};
+
 	return (
-		<>
-			{sectionLength > 0 ? (
-				<>
-					<div>Has {sectionLength} component found in your section</div>
-					<img src={url} width={300} height={300} />
-				</>
-			) : (
-				<div>Not have section selected</div>
-			)}
-		</>
+		<div className="root">
+			<div className="wrapperSection">
+				{sectionLength > 0 ? (
+					<>
+						<h3>Has {sectionLength} component found in your section</h3>
+						<div className="wrapperImg">
+							<img alt="Preview Selection" src={url} />
+						</div>
+						<button onClick={handleGenerateCode}>Generate Code</button>
+					</>
+				) : (
+					<h3>Not have section selected</h3>
+				)}
+			</div>
+		</div>
 	);
 }
 
