@@ -2,14 +2,14 @@ import { useState, useEffect } from "react";
 import "./App.css";
 
 function App() {
-	const [selectedSelection, setSelectedSection] = useState(false);
+	const [sectionLength, setSectionLength] = useState(0);
 
 	useEffect(() => {
 		const onWindowMessage = (e: MessageEvent) => {
 			const msg = e.data.pluginMessage;
 			if (msg.type === "loaded") {
-				const { isHasSelectionSelected } = msg.data;
-				setSelectedSection(isHasSelectionSelected);
+				const { selection } = msg.data;
+				setSectionLength(selection);
 			}
 		};
 
@@ -23,10 +23,10 @@ function App() {
 
 	return (
 		<>
-			{selectedSelection ? (
-				<div>Tim thay Selected Section</div>
+			{sectionLength > 0 ? (
+				<div>Has {sectionLength} component found in your section</div>
 			) : (
-				<div>Khong tim thay Selected Section</div>
+				<div>Not have section selected</div>
 			)}
 		</>
 	);

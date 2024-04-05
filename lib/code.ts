@@ -1,17 +1,27 @@
 figma.showUI(__html__, { width: 640, height: 480 });
+ 
+async function getSection()  {
+  const selection = figma.currentPage.selection;
+  const messageToUI = {
+    type: "loaded",
+    data: {
+      selection: selection.length,
+    },
+  };
+  figma.ui.postMessage(messageToUI);
+}
 
-figma.ui.onmessage = (msg: { type: string; count: number }) => {
+figma.ui.onmessage = async (msg: { type: string; count: number }) => {
 
-	if (msg.type === "ready") {
-		const selection = figma.currentPage.selection;
-		const messageToUI = {
-			type: "loaded",
-			data: {
-				isHasSelectionSelected: selection.length > 0,
-			},
-		};
-		figma.ui.postMessage(messageToUI);
-	}
+  switch(msg.type) {
+    case 'ready':
+      await getSection();
+      break;
+  }
+
 
 	// figma.closePlugin();
 };
+
+
+figma.on("selectionchange", getSection);
