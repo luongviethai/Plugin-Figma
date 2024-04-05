@@ -20,6 +20,9 @@ function App() {
 				setSectionLength(selectionLength);
 				preview && setUrl(convertToUrl(preview));
 			}
+			if (msg.type === "generate_code") {
+				console.log("msg", msg.data);
+			}
 		};
 
 		window.addEventListener("message", onWindowMessage);
@@ -31,7 +34,7 @@ function App() {
 	}, []);
 
 	const handleGenerateCode = () => {
-		console.log("generate code");
+		parent.postMessage({ pluginMessage: { type: "generate_code" } }, "*");
 	};
 
 	return (
