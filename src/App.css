@@ -24,3 +24,16 @@
 	height: 100%;
 	object-fit: contain;
 }
+
+pre {
+	background-color: rgb(31 41 55 / 1);
+	width: 100%;
+}
+
+.token.tag {
+	color: #f66;
+}
+
+.token.plain-text {
+	color: white;
+}

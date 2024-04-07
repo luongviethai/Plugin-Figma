@@ -1,3 +1,4 @@
+
 figma.showUI(__html__, { width: 640, height: 480 });
  
 async function getSection()  {
@@ -27,6 +28,8 @@ async function generateCode() {
       height: 0,
     };
   });
+
+  console.log('selection', selection[0].type)
 
   const messageToUI = {
     type: "generate_code",
