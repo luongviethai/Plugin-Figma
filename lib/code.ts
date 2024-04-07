@@ -29,8 +29,6 @@ async function generateCode() {
     };
   });
 
-  console.log('selection', selection[0].type)
-
   const messageToUI = {
     type: "generate_code",
     data: {
