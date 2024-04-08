@@ -37,17 +37,14 @@ async function generateCode() {
 		await Promise.all(selection.map((node) => generateHtml(node)))
 	);
 
-  const macaronCss =  compact(
-		await Promise.all(selection.map((node) => generateCss(node)))
-	);
-
-  console.log('macaronCss', macaronCss)
+  const macaronCss = generateCss(selection);
 
 	const messageToUI = {
 		type: "generate_code",
 		data: {
 			type: "root",
 			children: macaronLayers,
+      css: macaronCss
 		},
 		sizes,
 	};
