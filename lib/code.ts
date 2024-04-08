@@ -1,5 +1,5 @@
 import {compact} from "lodash";
-import {generate} from "./helpers"
+import {generateHtml} from "./helpers"
 figma.showUI(__html__, { width: 640, height: 480 });
  
 async function getSection()  {
@@ -33,7 +33,7 @@ async function generateCode() {
   const macaronLayers = compact(
     await Promise.all(
       selection.map((node) =>
-        generate(node)
+      generateHtml(node)
       )
     )
   );

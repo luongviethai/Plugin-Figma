@@ -3,6 +3,7 @@ import "./App.css";
 import Prism from "prismjs";
 import "prismjs/components/prism-jsx";
 import { toHtml } from "hast-util-to-html";
+import "figma-plugin-ds/dist/figma-plugin-ds.css";
 
 function App() {
 	const [sectionLength, setSectionLength] = useState(0);
