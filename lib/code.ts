@@ -1,4 +1,5 @@
-
+import {compact} from "lodash";
+import {generate} from "./helpers"
 figma.showUI(__html__, { width: 640, height: 480 });
  
 async function getSection()  {
@@ -29,12 +30,24 @@ async function generateCode() {
     };
   });
 
+  const macaronLayers = compact(
+    await Promise.all(
+      selection.map((node) =>
+        generate(node)
+      )
+    )
+  );
+
   const messageToUI = {
     type: "generate_code",
     data: {
-      sizes,
+      type: 'root',
+      children: macaronLayers
     },
+    sizes,
   };
+
+  console.log('macaronLayers', macaronLayers)
 
   figma.ui.postMessage(messageToUI);
 
