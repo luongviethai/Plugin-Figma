@@ -1,5 +1,5 @@
 import { compact } from "lodash";
-import { generateHtml } from "./helpers";
+import { generateHtml, generateCss } from "./helpers";
 
 figma.showUI(__html__, { width: 640, height: 480 });
 
@@ -36,6 +36,12 @@ async function generateCode() {
 	const macaronLayers = compact(
 		await Promise.all(selection.map((node) => generateHtml(node)))
 	);
+
+  const macaronCss =  compact(
+		await Promise.all(selection.map((node) => generateCss(node)))
+	);
+
+  console.log('macaronCss', macaronCss)
 
 	const messageToUI = {
 		type: "generate_code",
