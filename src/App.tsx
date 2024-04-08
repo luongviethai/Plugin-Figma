@@ -55,7 +55,12 @@ function App() {
 						<div className="wrapperImg">
 							<img alt="Preview Selection" src={url} />
 						</div>
-						<button onClick={handleGenerateCode}>Generate Code</button>
+						<button
+							className="button button--primary"
+							onClick={handleGenerateCode}
+						>
+							Generate Code
+						</button>
 						{isShowCode && (
 							<pre>
 								<code
