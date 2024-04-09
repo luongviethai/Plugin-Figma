@@ -71,7 +71,6 @@ export const generateCss = (selection: readonly SceneNode[]): any => {
 					["font-size"]: `${node.fontSize}px`,
 					["font-family"]: `${node.fontName.family}, "${node.fontName.style}"`,
 					["font-weight"]: node.fontWeight,
-					// ["line-height"]: `${node.listSpacing}px`,
 				};
 				_.set(css, getClassName("text", level, levelParent, index), cssText);
 				break;
