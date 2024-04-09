@@ -1,6 +1,9 @@
 .container-code {
 	height: calc(100% - 40px);
 	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
 }
 
 .wrapperSection {
@@ -16,6 +19,18 @@
 	height: 32px;
 }
 
+.wrapper-select select {
+	width: 128px;
+	height: 100%;
+	border: 2px solid #18a0fb;
+	background-color: #ffffff;
+}
+
+.wrapper-select option {
+	background-color: #222222;
+	color: #ffffff;
+}
+
 .container-code pre {
 	/* background-color: rgb(31 41 55 / 1); */
 	background-color: #0000000f;
@@ -23,6 +38,15 @@
 	height: calc(100% - 32px - 48px);
 	margin: 0;
 	overflow: auto;
+}
+
+.container-code pre::-webkit-scrollbar {
+	width: 6px;
+}
+
+.container-code pre::-webkit-scrollbar-thumb {
+	background-color: #0000004d;
+	border-radius: 5px;
 }
 
 .container-code .token.tag {
