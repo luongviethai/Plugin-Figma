@@ -74,7 +74,11 @@ function Code(props: CodeProps) {
 				</pre>
 			)}
 			<div className="wrapper-button-copy">
-				<button className="button button--secondary" onClick={handleCopy}>
+				<button
+					disabled={!htmlOutput && !cssOutput}
+					className="button button--secondary"
+					onClick={handleCopy}
+				>
 					Copy
 				</button>
 			</div>
