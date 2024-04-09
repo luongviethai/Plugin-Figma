@@ -33,6 +33,8 @@ function App() {
 				const { selectionLength, preview } = msg.data;
 				setSectionLength(selectionLength);
 				preview && setUrl(convertToUrl(preview));
+				setHTMLOutput("");
+				setCSSOutput("");
 			}
 			if (msg.type === "generate_code") {
 				const root = msg.data;
@@ -119,14 +121,15 @@ function App() {
 				<div className="wrapperImg">
 					<img alt="Preview Selection" src={url} />
 					{process > 0 && process < TIME_DELAY && (
-						<div className="overlay-preview">
+						<>
+							<div className="overlay-preview" />
 							<div className="wrapper-progress-bar">
 								<div
 									className="progress-bar"
 									style={{ width: `${(process / TIME_DELAY) * 100}%` }}
 								/>
 							</div>
-						</div>
+						</>
 					)}
 				</div>
 				<div className="button-generate">{renderButtonAction()}</div>
