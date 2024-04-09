@@ -5,6 +5,8 @@ import "figma-plugin-ds/dist/figma-plugin-ds.css";
 import Empty from "./components/Empty";
 import Code from "./components/Code";
 
+const TIME_DELAY = 2000;
+
 function App() {
 	const requestRef = useRef<number>(0);
 	const startTimeRef = useRef<number>(0);
@@ -49,7 +51,7 @@ function App() {
 	}, []);
 
 	useEffect(() => {
-		if (process >= 200) {
+		if (process >= TIME_DELAY) {
 			startCountRef.current = 0;
 			startTimeRef.current = 0;
 			cancelAnimationFrame(requestRef.current);
@@ -63,7 +65,7 @@ function App() {
 		const deltaTime = timestamp - startTimeRef.current;
 		const progress = deltaTime / 1000; // divide by 1000 to convert milliseconds to seconds
 		const nextCount = Math.round(startCountRef.current + progress * 99); // 99 is total steps implement for 1s
-		setProcess(nextCount);
+		setProcess(nextCount * 10);
 		requestRef.current = requestAnimationFrame(animateCount);
 	};
 
@@ -90,7 +92,7 @@ function App() {
 	};
 
 	const renderButtonAction = () => {
-		if (process >= 200)
+		if (process >= TIME_DELAY)
 			return (
 				<button className="button button--primary" onClick={handleGoToCode}>
 					Go to Code
@@ -116,12 +118,12 @@ function App() {
 			<div className="container-preview">
 				<div className="wrapperImg">
 					<img alt="Preview Selection" src={url} />
-					{process > 0 && process < 200 && (
+					{process > 0 && process < TIME_DELAY && (
 						<div className="overlay-preview">
 							<div className="wrapper-progress-bar">
 								<div
 									className="progress-bar"
-									style={{ width: `${(process / 200) * 100}%` }}
+									style={{ width: `${(process / TIME_DELAY) * 100}%` }}
 								/>
 							</div>
 						</div>
