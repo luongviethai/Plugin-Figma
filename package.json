@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "copy-to-clipboard": "^3.3.3",
     "figma-plugin-ds": "^1.0.1",
     "hast-util-to-html": "^9.0.1",
     "hastscript": "^9.0.0",

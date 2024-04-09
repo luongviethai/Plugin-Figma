@@ -1,39 +1,66 @@
 .root {
 	width: 100%;
 	height: 100%;
+	position: relative;
 }
 
-.wrapperSection {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
+.container-preview {
 	width: 100%;
-	height: 100%;
-	gap: 30px;
+	height: calc(100% - 40px);
 }
 
 .wrapperImg {
 	width: 100%;
-	height: 200px;
-	border: 1px solid black;
+	height: calc(100% - 48px);
 	box-sizing: border-box;
 }
 
 .wrapperImg img {
 	width: 100%;
 	height: 100%;
-	object-fit: contain;
+	object-fit: cover;
 }
 
-pre {
-	background-color: rgb(31 41 55 / 1);
+.button-generate {
+	padding: 0 12px;
 	width: 100%;
+	height: 48px;
+	border-top: 1px solid #0000001a;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
-.token.tag {
-	color: #f66;
+.button-generate .button {
+	width: 100%;
+	justify-content: center;
 }
 
-.token.plain-text {
-	color: white;
+.tab-trip {
+	display: flex;
+	width: 100%;
+	height: 40px;
+	box-sizing: border-box;
+	border-top: 1px solid #0000001a;
+	gap: 16px;
+	padding-left: 16px;
+}
+
+.tab-item {
+	cursor: pointer;
+	color: #0000004d;
+}
+
+.tab-preview,
+.tab-code {
+	width: fit-content;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 11px;
+}
+
+.tab-selected {
+	color: #000000cc;
 }

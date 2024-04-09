@@ -1,0 +1,50 @@
+.container-code {
+	height: calc(100% - 40px);
+	width: 100%;
+}
+
+.wrapperSection {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+	height: max-content;
+}
+
+.wrapper-select {
+	width: 100%;
+	height: 32px;
+}
+
+.container-code pre {
+	/* background-color: rgb(31 41 55 / 1); */
+	background-color: #0000000f;
+	width: 100%;
+	height: calc(100% - 32px - 48px);
+	margin: 0;
+	overflow: auto;
+}
+
+.container-code .token.tag {
+	color: #f66;
+}
+
+.wrapper-button-copy {
+	width: 100%;
+	height: 48px;
+	border-top: 1px solid #0000001a;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 0 12px;
+}
+
+.wrapper-button-copy .button {
+	width: 100%;
+	justify-content: center;
+	cursor: pointer;
+}
+
+.wrapper-button-copy .button:focus {
+	border: 1px solid #000000cc;
+}

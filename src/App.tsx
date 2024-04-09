@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import "./App.css";
-import Prism from "prismjs";
-import "prismjs/components/prism-jsx";
 import { toHtml } from "hast-util-to-html";
 import "figma-plugin-ds/dist/figma-plugin-ds.css";
+import Empty from "./components/Empty";
+import Code from "./components/Code";
 
 function App() {
 	const [sectionLength, setSectionLength] = useState(0);
-	const [isShowCode, setShowCode] = useState(false);
 	const [url, setUrl] = useState("");
 	const [htmlOutput, setHTMLOutput] = useState("");
 	const [cssOutput, setCSSOutput] = useState("");
+	const [tabSelected, setTabSelected] = useState<"preview" | "code">("preview");
 
 	const convertToUrl = (node: any) => {
 		const imageURL = URL.createObjectURL(
@@ -44,55 +44,59 @@ function App() {
 	}, []);
 
 	const handleGenerateCode = () => {
-		setShowCode(true);
+		setTabSelected("code");
 		parent.postMessage({ pluginMessage: { type: "generate_code" } }, "*");
 	};
 
+	const handleSwapTab = (type: "preview" | "code") => {
+		setTabSelected(type);
+	};
+
+	const renderTabPreview = () =>
+		sectionLength > 0 ? (
+			<div className="container-preview">
+				<div className="wrapperImg">
+					<img alt="Preview Selection" src={url} />
+				</div>
+				<div className="button-generate">
+					<button
+						className="button button--primary"
+						onClick={handleGenerateCode}
+					>
+						Generate Code
+					</button>
+				</div>
+			</div>
+		) : (
+			<Empty />
+		);
+
 	return (
 		<div className="root">
-			<div className="wrapperSection">
-				{sectionLength > 0 ? (
-					<>
-						<h3>Has {sectionLength} component found in your section</h3>
-						<div className="wrapperImg">
-							<img alt="Preview Selection" src={url} />
-						</div>
-						<button
-							className="button button--primary"
-							onClick={handleGenerateCode}
-						>
-							Generate Code
-						</button>
-						{isShowCode && (
-							<>
-								<pre>
-									<code
-										style={{
-											display: "block",
-											padding: "1rem",
-											whiteSpace: "pre-wrap",
-											fontSize: "10px",
-											background: "none",
-											fontFamily:
-												"ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace",
-										}}
-										dangerouslySetInnerHTML={{
-											__html: Prism.highlight(
-												htmlOutput,
-												Prism.languages.jsx,
-												"jsx"
-											),
-										}}
-									/>
-								</pre>
-								{cssOutput}
-							</>
-						)}
-					</>
-				) : (
-					<h3>Not have section selected</h3>
-				)}
+			<div className="tab-trip">
+				<div
+					className={`tab-item tab-preview ${
+						tabSelected === "preview" ? "tab-selected" : ""
+					}`}
+					onClick={() => handleSwapTab("preview")}
+				>
+					Preview
+				</div>
+				<div
+					className={`tab-item tab-code ${
+						tabSelected === "code" ? "tab-selected" : ""
+					}`}
+					onClick={() => handleSwapTab("code")}
+				>
+					Code
+				</div>
 			</div>
+
+			{tabSelected === "preview" ? (
+				renderTabPreview()
+			) : (
+				<Code htmlOutput={htmlOutput} cssOutput={cssOutput} />
+			)}
 		</div>
 	);
 }
