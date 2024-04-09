@@ -1,14 +1,20 @@
 import { h as createEl } from "hastscript";
-import { compact, isNumber, trim } from "lodash";
+import { compact } from "lodash";
 import { processCharacters } from "./processCharacters";
+import { getClassName } from "./getClassName";
 
-export const generateHtml = async (node: SceneNode, level = 0, levelParent?: number, index?: number): any => {
+export const generateHtml = async (
+	node: SceneNode,
+	level = 0,
+	levelParent?: number,
+	index?: number
+): any => {
 	switch (node.type) {
 		case "TEXT": {
 			return createEl(
 				"div",
 				{
-					className: `text ${trim(`text-${isNumber(levelParent) ? levelParent : ''}-${isNumber(level) ? level : ''}-${isNumber(index) ? index : ''}`)}`,
+					className: getClassName("text", level, levelParent, index),
 				},
 				...processCharacters(node.characters)
 			);
@@ -21,10 +27,14 @@ export const generateHtml = async (node: SceneNode, level = 0, levelParent?: num
 			return createEl(
 				"div",
 				{
-					className: `container ${trim(`container-${isNumber(levelParent) ? levelParent : ''}-${isNumber(level) ? level : ''}-${isNumber(index) ? index : ''}`)}`,
+					className: getClassName("container", level, levelParent, index),
 				},
 				...compact(
-					await Promise.all(node.children.map((child, index) => generateHtml(child, level + 1, level, index)))
+					await Promise.all(
+						node.children.map((child, index) =>
+							generateHtml(child, level + 1, level, index)
+						)
+					)
 				)
 			);
 
