@@ -22,13 +22,19 @@ const convertToCss = (css: Record<string, Record<string, string | number>>) => {
 
 const convertBoxShadowCss = (effects: readonly Effect[]): string => {
 	const getValidEffects = _.filter(_.cloneDeep(effects), effect => effect.visible && (effect.type === 'INNER_SHADOW' || effect.type === "DROP_SHADOW"));
-
-	const boxShadowResult = _.reduce<Effect[], string[]>(getValidEffects, ((result, effect) => {
+	const boxShadowResult = _.reduce<Effect[] , string[]>(getValidEffects, ((result, effect) => {
 		result.push(`${effect.offset.x}px ${effect.offset.y}px ${effect.radius}px ${effect.spread} ${solidPaintToHex(effect)}`);
 		return result;
 	}), []);
 
 	return _.join(boxShadowResult, ", "); 
+}
+
+const convertBorderColorCss = (strokes: readonly Paint[]): string => {
+	const getValidStrokes = _.filter(_.cloneDeep(strokes), stroke => stroke.visible);
+	const borderColorResult = _.map(getValidStrokes, stroke => solidPaintToHex(stroke));
+
+	return _.join(borderColorResult, " ");
 }
 
 export const getGeneralCssNode = (
@@ -77,17 +83,15 @@ export const getGeneralCssNode = (
 	if (node.minHeight) css["min-height"] = `${node.minHeight}px`;
 	if (node.maxWidth) css["max-width"] = `${node.maxWidth}px`;
 	if (node.maxHeight) css["max-height"] = `${node.maxHeight}px`;
-	if(node.strokes) {
+	if(!_.isEmpty(node.strokes)) {
 		css['border-width'] = `${node.strokeWeight as number}px`;
 		css['border-style'] = _.toLower(node.strokes[0].type);
-		css['border-color'] = solidPaintToHex(node.strokes[0]);
-
+		css['border-color'] = convertBorderColorCss(node.strokes)
 	}
 	if(node.effects) {
 		const cloneEffects = _.cloneDeep(node.effects);
 		const blurEffect = _.find(cloneEffects, effect => effect.type ==="LAYER_BLUR" && effect.visible);
 		const backgroundBlurEffect = _.find(cloneEffects, effect => effect.type ==="BACKGROUND_BLUR" && effect.visible);
-
 
 		if(convertBoxShadowCss(node.effects)) {
 			css['box-shadow'] = convertBoxShadowCss(node.effects);
@@ -107,9 +111,7 @@ const getCssFrameNode = (
 	const cloneGeneralCss = _.cloneDeep(getGeneralCssNode(node));
 	if (node.cornerRadius && _.isNumber(node.cornerRadius))
 		cloneGeneralCss["border-radius"] = `${node.cornerRadius}px`;
-
 	if (node.itemSpacing) cloneGeneralCss.gap = `${node.itemSpacing}px`;
-
 	if (node.layoutMode && node.layoutMode !== "NONE") {
 		cloneGeneralCss.display = "flex";
 		if (node.layoutMode === "VERTICAL") {
@@ -123,7 +125,6 @@ const getCssFrameNode = (
 		node.paddingBottom
 	)
 		cloneGeneralCss.padding = `${node.paddingTop}px ${node.paddingRight}px ${node.paddingBottom}px ${node.paddingLeft}px`;
-
 	if (node.topLeftRadius)
 		cloneGeneralCss["border-top-left-radius"] = `${node.topLeftRadius}px`;
 	if (node.topRightRadius)
