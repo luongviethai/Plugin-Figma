@@ -1,5 +1,6 @@
 import { Buffer } from "buffer";
 import { h } from "hastscript";
+import _ from "lodash";
 
 const lineBreakRegExp = /\r\n|[\n\r\u2028\u2029\u0085]/;
 
@@ -28,4 +29,25 @@ export function processCharacters(characters: string): any {
 		});
 	}
 	return results;
+}
+
+export function solidPaintToHex(solidPaint: SolidPaint): string {
+	const cloneSolidPaint = _.cloneDeep(solidPaint.color);
+	_.set(cloneSolidPaint, ["a"], solidPaint.opacity || 1);
+	return rgbaToHex(cloneSolidPaint);
+}
+
+export function rgbaToHex(rgba: RGBA): string {
+	const { r, g, b, a } = rgba;
+	return (
+		"#" +
+		(a === 1 ? [r, g, b] : [r, g, b, a])
+			.map((c) => {
+				const str = Math.round(c * 255)
+					.toString(16)
+					.toUpperCase();
+				return str.length === 1 ? "0" + str : str;
+			})
+			.join("")
+	);
 }
