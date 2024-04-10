@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "buffer": "^6.0.3",
     "copy-to-clipboard": "^3.3.3",
     "figma-plugin-ds": "^1.0.1",
     "hast-util-to-html": "^9.0.1",
@@ -18,7 +19,8 @@
     "lodash": "^4.17.21",
     "prismjs": "^1.29.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "svg-parser": "^2.0.4"
   },
   "devDependencies": {
     "@figma/eslint-plugin-figma-plugins": "^0.15.0",
@@ -27,6 +29,7 @@
     "@types/prismjs": "^1.26.3",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
+    "@types/svg-parser": "^2.0.6",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
     "@vitejs/plugin-react": "^4.2.1",

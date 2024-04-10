@@ -1,7 +1,9 @@
 import { h as createEl } from "hastscript";
-import { compact } from "lodash";
-import { processCharacters } from "./processCharacters";
+import _ from "lodash";
+import { processCharacters, imageToDataURL } from "./utils";
 import { getClassName } from "./getClassName";
+import * as svgParser from "svg-parser";
+import { VectorLikeNodeChecker } from "../VectorLikeNodeChecker";
 
 export const generateHtml = async (
 	node: SceneNode,
@@ -9,6 +11,59 @@ export const generateHtml = async (
 	levelParent?: number,
 	index?: number
 ): any => {
+	const vectorLikeNodeChecker = new VectorLikeNodeChecker();
+
+	if (!node.visible) {
+		// TODO: support visibility
+		return undefined;
+	}
+
+	// ignore mask layers
+	if ("isMask" in node && node.isMask) {
+		return undefined;
+	}
+
+	// Image like node
+	if (
+		node.type == "RECTANGLE" &&
+		node.fills !== figma.mixed &&
+		node.fills.length
+	) {
+		const fill = node.fills[0];
+		if (fill.type === "IMAGE" && fill.imageHash) {
+			const image = figma.getImageByHash(fill.imageHash);
+			const dataURL = image
+				? imageToDataURL(await image.getBytesAsync())
+				: undefined;
+
+			return createEl("img", {
+				src: dataURL,
+			});
+		}
+	}
+
+	if (vectorLikeNodeChecker.check(node)) {
+		try {
+			const svg = await node.exportAsync({ format: "SVG" });
+			const svgText = String.fromCharCode(...svg);
+
+			const root = svgParser.parse(svgText);
+			const svgElem = root.children[0];
+			if (svgElem.type !== "element") {
+				throw new Error("Expected element type");
+			}
+
+			const properties = _.cloneDeep(svgElem.properties);
+			_.omit(properties, ["xmlns"]);
+			const cloneSvgElem = _.cloneDeep(svgElem);
+			_.set(cloneSvgElem, "properties", properties);
+
+			return cloneSvgElem;
+		} catch (error) {
+			console.error(`error exporting ${node.name} to SVG`);
+			console.error(String(error));
+		}
+	}
 	switch (node.type) {
 		case "TEXT": {
 			return createEl(
@@ -29,7 +84,7 @@ export const generateHtml = async (
 				{
 					className: getClassName("container", level, levelParent, index),
 				},
-				...compact(
+				..._.compact(
 					await Promise.all(
 						node.children.map((child, index) =>
 							generateHtml(child, level + 1, level, index)

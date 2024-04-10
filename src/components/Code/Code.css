@@ -32,7 +32,6 @@
 }
 
 .container-code pre {
-	/* background-color: rgb(31 41 55 / 1); */
 	background-color: #0000000f;
 	width: 100%;
 	height: calc(100% - 32px - 48px);

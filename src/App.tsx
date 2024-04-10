@@ -4,6 +4,7 @@ import { toHtml } from "hast-util-to-html";
 import "figma-plugin-ds/dist/figma-plugin-ds.css";
 import Empty from "./components/Empty";
 import Code from "./components/Code";
+import BackgroundPreview from "./components/Background";
 
 const TIME_DELAY = 2000;
 
@@ -33,8 +34,6 @@ function App() {
 				const { selectionLength, preview } = msg.data;
 				setSectionLength(selectionLength);
 				preview && setUrl(convertToUrl(preview));
-				setHTMLOutput("");
-				setCSSOutput("");
 			}
 			if (msg.type === "generate_code") {
 				const root = msg.data;
@@ -119,6 +118,7 @@ function App() {
 		sectionLength > 0 ? (
 			<div className="container-preview">
 				<div className="wrapperImg">
+					<BackgroundPreview />
 					<img alt="Preview Selection" src={url} />
 					{process > 0 && process < TIME_DELAY && (
 						<>
