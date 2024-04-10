@@ -5,6 +5,7 @@ import "figma-plugin-ds/dist/figma-plugin-ds.css";
 import Empty from "./components/Empty";
 import Code from "./components/Code";
 import BackgroundPreview from "./components/Background";
+import { formatHTML, formatCSS} from "./utils"
 
 const TIME_DELAY = 2000;
 
@@ -38,8 +39,8 @@ function App() {
 			if (msg.type === "generate_code") {
 				const root = msg.data;
 				const html = toHtml(root).replace("&#x27;", "'");
-				setHTMLOutput(html);
-				setCSSOutput(msg.data.css);
+				setHTMLOutput(formatHTML(html));
+				setCSSOutput(formatCSS(msg.data.css));
 			}
 		};
 

@@ -4,7 +4,6 @@ import "prismjs/components/prism-jsx";
 import "prism-themes/themes/prism-material-dark.css";
 import "./Code.css";
 import copy from "copy-to-clipboard";
-import { formatHTML, formatCSS} from "../../utils"
 
 type CodeProps = {
 	htmlOutput: string;
@@ -13,8 +12,7 @@ type CodeProps = {
 
 function Code(props: CodeProps) {
 	const [value, setValue] = useState("html");
-	const htmlOutput = formatHTML(props.htmlOutput);
-	const cssOutput  = formatCSS(props.cssOutput)
+	const {htmlOutput, cssOutput} = props;
 
 	const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		setValue(e.target.value);
