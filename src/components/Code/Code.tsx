@@ -1,8 +1,10 @@
 import { useState } from "react";
 import Prism from "prismjs";
 import "prismjs/components/prism-jsx";
+import "prism-themes/themes/prism-material-dark.css";
 import "./Code.css";
 import copy from "copy-to-clipboard";
+import { formatHTML, formatCSS} from "../../utils"
 
 type CodeProps = {
 	htmlOutput: string;
@@ -10,8 +12,9 @@ type CodeProps = {
 };
 
 function Code(props: CodeProps) {
-	const { htmlOutput, cssOutput } = props;
 	const [value, setValue] = useState("html");
+	const htmlOutput = formatHTML(props.htmlOutput);
+	const cssOutput  = formatCSS(props.cssOutput)
 
 	const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		setValue(e.target.value);
@@ -51,7 +54,7 @@ function Code(props: CodeProps) {
 								"ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace",
 						}}
 						dangerouslySetInnerHTML={{
-							__html: Prism.highlight(htmlOutput, Prism.languages.jsx, "jsx"),
+							__html: Prism.highlight(htmlOutput, Prism.languages.html, "html"),
 						}}
 					/>
 				</pre>
@@ -68,7 +71,7 @@ function Code(props: CodeProps) {
 								"ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace",
 						}}
 						dangerouslySetInnerHTML={{
-							__html: Prism.highlight(cssOutput, Prism.languages.jsx, "jsx"),
+							__html: Prism.highlight(cssOutput, Prism.languages.css, "css"),
 						}}
 					/>
 				</pre>
