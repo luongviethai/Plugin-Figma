@@ -14,13 +14,13 @@ function App() {
 	const startTimeRef = useRef<number>(0);
 	const startCountRef = useRef(0);
 	const [process, setProcess] = useState(0);
-	const [sectionLength, setSectionLength] = useState(0);
+	const [selectionLength, setSelectionLength] = useState(0);
 	const [url, setUrl] = useState("");
 	const [htmlOutput, setHTMLOutput] = useState("");
 	const [cssOutput, setCSSOutput] = useState("");
 	const [tabSelected, setTabSelected] = useState<"preview" | "code">("preview");
 
-	const convertToUrl = (node: any) => {
+	const convertToUrl = (node: BlobPart) => {
 		const imageURL = URL.createObjectURL(
 			new Blob([node], { type: "image/jpg" })
 		);
@@ -33,7 +33,7 @@ function App() {
 			if (msg.type === "loaded") {
 				handleCancel();
 				const { selectionLength, preview } = msg.data;
-				setSectionLength(selectionLength);
+				setSelectionLength(selectionLength);
 				preview && setUrl(convertToUrl(preview));
 			}
 			if (msg.type === "generate_code") {
@@ -116,7 +116,7 @@ function App() {
 	};
 
 	const renderTabPreview = () =>
-		sectionLength > 0 ? (
+		selectionLength > 0 ? (
 			<div className="container-preview">
 				<div className="wrapperImg">
 					<BackgroundPreview />

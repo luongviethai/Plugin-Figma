@@ -2,7 +2,7 @@ import _ from "lodash";
 import { getClassName } from "./getClassName";
 import { solidPaintToHex } from "./utils";
 
-function objectToCSS(selector: string, obj: Record<string, any>) {
+function objectToCSS(selector: string, obj: Record<string, string | number>) {
 	let cssString = selector + " {\n";
 	for (const key in obj) {
 		if (Object.prototype.hasOwnProperty.call(obj, key)) {
@@ -13,12 +13,23 @@ function objectToCSS(selector: string, obj: Record<string, any>) {
 	return cssString;
 }
 
-const convertToCss = (css: Record<string, Record<string, any>>) => {
+const convertToCss = (css: Record<string, Record<string, string | number>>) => {
 	return _.join(
 		_.map(css, (value, key) => objectToCSS(`.${key}`, value)),
 		" "
 	);
 };
+
+const convertBoxShadowCss = (effects: readonly Effect[]): string => {
+	const getValidEffects = _.filter(_.cloneDeep(effects), effect => effect.visible && (effect.type === 'INNER_SHADOW' || effect.type === "DROP_SHADOW"));
+
+	const boxShadowResult = _.reduce<Effect[], string[]>(getValidEffects, ((result, effect) => {
+		result.push(`${effect.offset.x}px ${effect.offset.y}px ${effect.radius}px ${effect.spread} ${solidPaintToHex(effect)}`);
+		return result;
+	}), []);
+
+	return _.join(boxShadowResult, ", "); 
+}
 
 export const getGeneralCssNode = (
 	node: FrameNode | TextNode | ComponentSetNode | ComponentNode | InstanceNode
@@ -66,6 +77,26 @@ export const getGeneralCssNode = (
 	if (node.minHeight) css["min-height"] = `${node.minHeight}px`;
 	if (node.maxWidth) css["max-width"] = `${node.maxWidth}px`;
 	if (node.maxHeight) css["max-height"] = `${node.maxHeight}px`;
+	if(node.strokes) {
+		css['border-width'] = `${node.strokeWeight as number}px`;
+		css['border-style'] = _.toLower(node.strokes[0].type);
+		css['border-color'] = solidPaintToHex(node.strokes[0]);
+
+	}
+	if(node.effects) {
+		const cloneEffects = _.cloneDeep(node.effects);
+		const blurEffect = _.find(cloneEffects, effect => effect.type ==="LAYER_BLUR" && effect.visible);
+		const backgroundBlurEffect = _.find(cloneEffects, effect => effect.type ==="BACKGROUND_BLUR" && effect.visible);
+
+
+		if(convertBoxShadowCss(node.effects)) {
+			css['box-shadow'] = convertBoxShadowCss(node.effects);
+		}
+		if(blurEffect) 
+			css.filter = `blur(${blurEffect.radius}px)`;
+		if(backgroundBlurEffect) 
+			css['backdrop-filter'] = `blur(${backgroundBlurEffect.radius}px)`;
+	}
 
 	return css;
 };
