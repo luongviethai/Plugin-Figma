@@ -17,6 +17,7 @@
 .wrapper-select {
 	width: 100%;
 	height: 32px;
+	padding-left: 8px;
 }
 
 .wrapper-select select {

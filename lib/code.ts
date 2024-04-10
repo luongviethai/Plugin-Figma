@@ -20,19 +20,6 @@ async function getSection() {
 
 async function generateCode() {
 	const selection = figma.currentPage.selection;
-	const sizes = selection.map((node) => {
-		if ("width" in node) {
-			return {
-				width: node.width,
-				height: node.height,
-			};
-		}
-		return {
-			width: 0,
-			height: 0,
-		};
-	});
-
 	const macaronLayers = compact(
 		await Promise.all(selection.map((node) => generateHtml(node)))
 	);
@@ -46,7 +33,6 @@ async function generateCode() {
 			children: macaronLayers,
 			css: macaronCss,
 		},
-		sizes,
 	};
 
 	figma.ui.postMessage(messageToUI);

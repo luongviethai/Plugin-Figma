@@ -32,9 +32,9 @@ export function processCharacters(characters: string): any {
 }
 
 export function solidPaintToHex(solidPaint: SolidPaint): string {
-	const cloneSolidPaint = _.cloneDeep(solidPaint.color);
+	const cloneSolidPaint:RGB | RGBA = _.cloneDeep(solidPaint.color);
 	_.set(cloneSolidPaint, ["a"], solidPaint.opacity || 1);
-	return rgbaToHex(cloneSolidPaint);
+	return rgbaToHex(cloneSolidPaint as RGBA);
 }
 
 export function rgbaToHex(rgba: RGBA): string {
