@@ -5,7 +5,7 @@ import { solidPaintToHex } from "./utils";
 function objectToCSS(selector: string, obj: Record<string, any>) {
 	let cssString = selector + " {\n";
 	for (const key in obj) {
-		if (obj.hasOwnProperty(key)) {
+		if (Object.prototype.hasOwnProperty.call(obj, key)) {
 			cssString += "  " + key + ": " + obj[key] + ";\n";
 		}
 	}
@@ -20,7 +20,9 @@ const convertToCss = (css: Record<string, Record<string, any>>) => {
 	);
 };
 
-export const getCssNode = (node: FrameNode | TextNode) => {
+export const getGeneralCssNode = (
+	node: FrameNode | TextNode | ComponentSetNode | ComponentNode | InstanceNode
+) => {
 	const css: Record<string, string | number> = {};
 	if (node.width) {
 		switch (node.layoutSizingHorizontal) {
@@ -53,62 +55,6 @@ export const getCssNode = (node: FrameNode | TextNode) => {
 		}
 	}
 	if (node.opacity !== 1) css.opacity = 1;
-	if ((node as FrameNode).itemSpacing)
-		css.gap = `${(node as FrameNode).itemSpacing}px`;
-	if (node.minWidth) css["min-width"] = `${node.minWidth}px`;
-	if (node.minHeight) css["min-height"] = `${node.minHeight}px`;
-	if (node.maxWidth) css["max-width"] = `${node.maxWidth}px`;
-	if (node.maxHeight) css["max-height"] = `${node.maxHeight}px`;
-	if (
-		(node as FrameNode).paddingLeft ||
-		(node as FrameNode).paddingRight ||
-		(node as FrameNode).paddingTop ||
-		(node as FrameNode).paddingBottom
-	)
-		css.padding = `${(node as FrameNode).paddingTop}px ${
-			(node as FrameNode).paddingRight
-		}px ${(node as FrameNode).paddingBottom}px ${
-			(node as FrameNode).paddingLeft
-		}px`;
-
-	if (
-		(node as FrameNode).cornerRadius &&
-		_.isNumber((node as FrameNode).cornerRadius)
-	)
-		css["border-radius"] = `${(node as FrameNode).cornerRadius}px`;
-	if ((node as FrameNode).topLeftRadius)
-		css["border-top-left-radius"] = `${(node as FrameNode).topLeftRadius}px`;
-	if ((node as FrameNode).topRightRadius)
-		css["border-top-right-radius"] = `${(node as FrameNode).topRightRadius}px`;
-	if ((node as FrameNode).bottomLeftRadius)
-		css["border-bottom-left-radius"] = `${
-			(node as FrameNode).bottomLeftRadius
-		}px`;
-	if ((node as FrameNode).bottomRightRadius)
-		css["border-bottom-right-radius"] = `${
-			(node as FrameNode).bottomRightRadius
-		}px`;
-
-	if (
-		(node as FrameNode).layoutMode &&
-		(node as FrameNode).layoutMode !== "NONE"
-	) {
-		css.display = "flex";
-		if ((node as FrameNode).layoutMode === "VERTICAL") {
-			css["flex-direction"] = "column";
-		}
-	}
-	if ((node as TextNode).fontSize)
-		css["font-size"] = `${(node as TextNode).fontSize}px`;
-	if ((node as TextNode).fontName)
-		css["font-family"] = `${(node as TextNode).fontName.family}, "${
-			(node as TextNode).fontName.style
-		}"`;
-	if ((node as TextNode).fontWeight)
-		css["font-weight"] = (node as TextNode).fontWeight;
-	if ((node as TextNode).textAlignHorizontal)
-		css["text-align"] = _.toLower((node as TextNode).textAlignHorizontal);
-
 	if (!_.isEmpty(node.fills)) {
 		if (node.type === "TEXT") {
 			css.color = solidPaintToHex(node.fills[0]);
@@ -116,11 +62,70 @@ export const getCssNode = (node: FrameNode | TextNode) => {
 			css["background-color"] = solidPaintToHex(node.fills[0]);
 		}
 	}
+	if (node.minWidth) css["min-width"] = `${node.minWidth}px`;
+	if (node.minHeight) css["min-height"] = `${node.minHeight}px`;
+	if (node.maxWidth) css["max-width"] = `${node.maxWidth}px`;
+	if (node.maxHeight) css["max-height"] = `${node.maxHeight}px`;
 
 	return css;
 };
 
-export const generateCss = (selection: readonly SceneNode[]): any => {
+const getCssFrameNode = (
+	node: FrameNode | ComponentSetNode | ComponentNode | InstanceNode
+) => {
+	const cloneGeneralCss = _.cloneDeep(getGeneralCssNode(node));
+	if (node.cornerRadius && _.isNumber(node.cornerRadius))
+		cloneGeneralCss["border-radius"] = `${node.cornerRadius}px`;
+
+	if (node.itemSpacing) cloneGeneralCss.gap = `${node.itemSpacing}px`;
+
+	if (node.layoutMode && node.layoutMode !== "NONE") {
+		cloneGeneralCss.display = "flex";
+		if (node.layoutMode === "VERTICAL") {
+			cloneGeneralCss["flex-direction"] = "column";
+		}
+	}
+	if (
+		node.paddingLeft ||
+		node.paddingRight ||
+		node.paddingTop ||
+		node.paddingBottom
+	)
+		cloneGeneralCss.padding = `${node.paddingTop}px ${node.paddingRight}px ${node.paddingBottom}px ${node.paddingLeft}px`;
+
+	if (node.topLeftRadius)
+		cloneGeneralCss["border-top-left-radius"] = `${node.topLeftRadius}px`;
+	if (node.topRightRadius)
+		cloneGeneralCss["border-top-right-radius"] = `${node.topRightRadius}px`;
+	if (node.bottomLeftRadius)
+		cloneGeneralCss["border-bottom-left-radius"] = `${node.bottomLeftRadius}px`;
+	if (node.bottomRightRadius)
+		cloneGeneralCss[
+			"border-bottom-right-radius"
+		] = `${node.bottomRightRadius}px`;
+
+	return cloneGeneralCss;
+};
+
+const getCssTextNode = (node: TextNode) => {
+	const cloneGeneralCss = _.cloneDeep(getGeneralCssNode(node));
+	if (node.fontSize)
+		cloneGeneralCss["font-size"] = `${node.fontSize as number}px`;
+	if (node.fontName)
+		cloneGeneralCss[
+			"font-family"
+		] = `${node.fontName.family}, "${node.fontName.style}"`;
+	if (node.fontWeight)
+		cloneGeneralCss["font-weight"] = node.fontWeight as number;
+	if (node.textAlignHorizontal)
+		cloneGeneralCss["text-align"] = _.toLower(node.textAlignHorizontal);
+	if (node.textAlignVertical)
+		cloneGeneralCss["vertical-align"] = _.toLower(node.textAlignVertical);
+
+	return cloneGeneralCss;
+};
+
+export const generateCss = (selection: readonly SceneNode[]): string => {
 	const css = {};
 	const generateCssNode = async (
 		node: SceneNode,
@@ -133,7 +138,7 @@ export const generateCss = (selection: readonly SceneNode[]): any => {
 				_.set(
 					css,
 					getClassName("text", level, levelParent, index),
-					getCssNode(node as TextNode)
+					getCssTextNode(node)
 				);
 				break;
 			}
@@ -145,7 +150,7 @@ export const generateCss = (selection: readonly SceneNode[]): any => {
 				_.set(
 					css,
 					getClassName("container", level, levelParent, index),
-					getCssNode(node as FrameNode)
+					getCssFrameNode(node)
 				);
 				if (node.children) {
 					await Promise.all(
