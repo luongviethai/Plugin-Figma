@@ -20,18 +20,19 @@ async function getSection() {
 
 async function generateCode() {
 	const selection = figma.currentPage.selection;
-	const macaronLayers = compact(
+
+	const html = compact(
 		await Promise.all(selection.map((node) => generateHtml(node)))
 	);
 
-	const macaronCss = generateCss(selection);
+	const css = generateCss(selection);
 
 	const messageToUI = {
 		type: "generate_code",
 		data: {
 			type: "root",
-			children: macaronLayers,
-			css: macaronCss,
+			children: html,
+			css,
 		},
 	};
 
