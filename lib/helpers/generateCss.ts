@@ -156,6 +156,38 @@ const getCssFrameNode = (
 	}
 ) => {
 	const cloneGeneralCss = _.cloneDeep(getGeneralCssNode(node, parentProps));
+	if (node.primaryAxisAlignItems) {
+		switch (node.primaryAxisAlignItems) {
+			case "CENTER":
+				cloneGeneralCss["justify-content"] = "center";
+				break;
+			case "MAX":
+				cloneGeneralCss["justify-content"] = "end";
+				break;
+			case "MIN":
+				cloneGeneralCss["justify-content"] = "start";
+				break;
+			case "SPACE_BETWEEN":
+				cloneGeneralCss["justify-content"] = "space-between";
+				break;
+		}
+	}
+	if (node.counterAxisAlignItems) {
+		switch (node.counterAxisAlignItems) {
+			case "CENTER":
+				cloneGeneralCss["align-items"] = "center";
+				break;
+			case "MAX":
+				cloneGeneralCss["align-items"] = "end";
+				break;
+			case "MIN":
+				cloneGeneralCss["align-items"] = "start";
+				break;
+			case "BASELINE":
+				cloneGeneralCss["align-items"] = "baseline";
+				break;
+		}
+	}
 	if (node.cornerRadius && _.isNumber(node.cornerRadius))
 		cloneGeneralCss["border-radius"] = `${node.cornerRadius}px`;
 	if (node.itemSpacing) cloneGeneralCss.gap = `${node.itemSpacing}px`;
