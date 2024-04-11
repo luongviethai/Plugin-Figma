@@ -1,6 +1,7 @@
 import { Buffer } from "buffer";
 import { h } from "hastscript";
 import _ from "lodash";
+import type * as hast from "hast";
 
 const lineBreakRegExp = /\r\n|[\n\r\u2028\u2029\u0085]/;
 
@@ -16,9 +17,9 @@ export function imageToDataURL(data: Uint8Array): string | undefined {
 	}
 }
 
-export function processCharacters(characters: string): any {
+export function processCharacters(characters: string): hast.Content[] {
 	const lines = characters.split(lineBreakRegExp);
-	const results = [];
+	const results: hast.Content[] = [];
 	for (let i = 0; i < lines.length; ++i) {
 		if (i !== 0) {
 			results.push(h("br"));
@@ -32,7 +33,7 @@ export function processCharacters(characters: string): any {
 }
 
 export function solidPaintToHex(solidPaint: SolidPaint): string {
-	const cloneSolidPaint:RGB | RGBA = _.cloneDeep(solidPaint.color);
+	const cloneSolidPaint: RGB | RGBA = _.cloneDeep(solidPaint.color);
 	_.set(cloneSolidPaint, ["a"], solidPaint.opacity || 1);
 	return rgbaToHex(cloneSolidPaint as RGBA);
 }

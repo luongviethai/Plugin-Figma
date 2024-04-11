@@ -108,7 +108,7 @@ export const getGeneralCssNode = (
 		}
 	}
 	if (node.opacity !== 1) css.opacity = 1;
-	if (!_.isEmpty(node.fills)) {
+	if (!_.isEmpty(node.fills) && node.fills !== figma.mixed) {
 		if (node.type === "TEXT") {
 			css.color = solidPaintToHex(node.fills[0]);
 		} else {
@@ -226,9 +226,9 @@ const getCssTextNode = (
 	}
 ) => {
 	const cloneGeneralCss = _.cloneDeep(getGeneralCssNode(node, parentProps));
-	if (node.fontSize)
-		cloneGeneralCss["font-size"] = `${node.fontSize as number}px`;
-	if (node.fontName)
+	if (node.fontSize && node.fontSize !== figma.mixed)
+		cloneGeneralCss["font-size"] = `${node.fontSize}px`;
+	if (node.fontName && node.fontName !== figma.mixed)
 		cloneGeneralCss[
 			"font-family"
 		] = `${node.fontName.family}, "${node.fontName.style}"`;
@@ -272,12 +272,10 @@ export const generateCss = (selection: readonly SceneNode[]): string => {
 					getClassName("container", level, levelParent, index),
 					getCssFrameNode(node, {
 						parentLayout: node.layoutMode,
-						groupTopLeft: node.strokes.length
-							? {
-									x: node.strokeLeftWeight,
-									y: node.strokeTopWeight,
-							  }
-							: { x: 0, y: 0 },
+						groupTopLeft: {
+							x: node.strokes.length ? node.strokeLeftWeight : 0,
+							y: node.strokes.length ? node.strokeTopWeight : 0,
+						},
 					})
 				);
 				if (node.children) {

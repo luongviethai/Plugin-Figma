@@ -3,14 +3,14 @@ import _ from "lodash";
 import { processCharacters, imageToDataURL } from "./utils";
 import { getClassName } from "./getClassName";
 import * as svgParser from "svg-parser";
-import { VectorLikeNodeChecker } from "../VectorLikeNodeChecker";
+import { VectorLikeNodeChecker } from "./VectorLikeNodeChecker";
 
 export const generateHtml = async (
 	node: SceneNode,
 	level = 0,
 	levelParent?: number,
 	index?: number
-): any => {
+): Promise<Element | undefined> => {
 	const vectorLikeNodeChecker = new VectorLikeNodeChecker();
 
 	if (!node.visible) {
